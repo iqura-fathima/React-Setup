@@ -1,12 +1,13 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { useFormik } from "formik";
 import { useQueryClient } from "react-query";
-import { useAppStore } from "./store";
+import {  useAppStore } from "./store";
 import "./index.css";
 
 function Form() {
   const queryClient = useQueryClient();
-  const { addItem } = useAppStore();
+  const store= useAppStore();
+  const {addItem} = store;
 
   const formik = useFormik({
     initialValues: {
@@ -14,12 +15,16 @@ function Form() {
       email: "",
     },
     onSubmit: async (values) => {
-      await addItem(values);
+      console.log(values);
+      store.addItem(values);
+      console.log(store.items)
       queryClient.invalidateQueries("items");
       formik.resetForm();
     },
   });
-
+  useEffect(()=>{
+    console.log(store.items);
+  })
   return (
     <form onSubmit={formik.handleSubmit}>
       <div className="mb-4 align-middle flex items-center">
